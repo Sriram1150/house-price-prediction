@@ -1,9 +1,24 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import boto3
+import os
 
-# Load trained model
-model = joblib.load("house_price_model.pkl")
+bucket_name = "house-price-mlops-models"
+
+model_file = "house_price_model.pkl"
+
+s3 = boto3.client("s3")
+
+if not os.path.exists(model_file):
+
+    s3.download_file(
+        bucket_name,
+        model_file,
+        model_file
+    )
+
+model = joblib.load(model_file)
 
 st.set_page_config(page_title="House Price Prediction")
 
